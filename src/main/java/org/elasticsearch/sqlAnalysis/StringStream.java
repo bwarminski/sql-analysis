@@ -1,7 +1,7 @@
 package org.elasticsearch.sqlAnalysis;
 
-import org.elasticsearch.common.Preconditions;
-import org.elasticsearch.common.base.Optional;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,7 +80,8 @@ public class StringStream {
     }
     public void skipToEnd() {this.pos = this.string.length();}
     public boolean skipTo(char ch) {
-        int idx = this.string.indexOf(ch);
+        int idx = this.string.substring(pos).indexOf(ch);
+        if (idx >= 0) idx += pos;
         if (idx >= 0) {
             this.pos = idx;
             return true;

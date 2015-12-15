@@ -7,7 +7,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.AbstractIndexAnalyzerProvider;
-import org.elasticsearch.index.settings.IndexSettings;
+import org.elasticsearch.index.settings.IndexSettingsService;
 
 /**
  * Created by bwarminski on 8/19/15.
@@ -15,8 +15,8 @@ import org.elasticsearch.index.settings.IndexSettings;
 public class BasicSQLAnalyzerProvider extends AbstractIndexAnalyzerProvider<BasicSQLAnalyzer> {
 
     @Inject
-    public BasicSQLAnalyzerProvider(Index index, @IndexSettings Settings indexSettings, Environment env, @Assisted String name, @Assisted Settings settings) {
-        super(index,indexSettings,name,settings);
+    public BasicSQLAnalyzerProvider(Index index, IndexSettingsService indexSettingsService, Environment env, @Assisted String name, @Assisted Settings settings) {
+        super(index,indexSettingsService.getSettings(),name,settings);
 
     }
 

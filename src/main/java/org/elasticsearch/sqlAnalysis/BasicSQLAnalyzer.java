@@ -12,15 +12,14 @@ import java.io.Reader;
  * Created by bwarminski on 8/19/15.
  */
 public class BasicSQLAnalyzer extends Analyzer {
-    @Override
-    protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
-        return new TokenStreamComponents(new BasicSQLTokenizer(reader));
+    protected TokenStreamComponents createComponents(String fieldName) {
+        return new TokenStreamComponents(new BasicSQLTokenizer());
     }
 
     public static void main(String[] args) throws IOException {
         Analyzer analyzer = new BasicSQLAnalyzer();
-        TokenStream stream = analyzer.tokenStream("SomeField", "SELECT attribute_value_str AS \"profile_value_string\",COUNT(DISTINCT customer_id) AS \"profiles\" FROM (SELECT customer_id, attribute_type, attribute_key, attribute_value_str, version, FIRST_VALUE(version) OVER (PARTITION BY customer_id ORDER BY version ASC) AS latest_version FROM \"fact_customer_profiles\" WHERE ((profiledb_id = 64462) AND (attribute_key = 'Apps most used'))) AS inner_table WHERE ((attribute_key = 'Apps most used') AND (attribute_type = 's') AND (version = latest_version)) GROUP BY \"profile_value_string\" ORDER BY \"profiles\" DESC");
-
+        TokenStream stream = analyzer.tokenStream("SomeField", "SELECT a_1 AS \"alias_ME5EGYLSMQQGGYLUMVTW64TZ\",COUNT(*) AS \"occurrences_metric\" FROM \"fact_events\" WHERE ((name = 'Card opened') AND (client_date >= '2015-08-03' AND client_date <= '2015-09-02') AND (app_id = '56981')) GROUP BY \"alias_ME5EGYLSMQQGGYLUMVTW64TZ\" ORDER BY \"occurrences_metric\" DESC");
+        stream.reset();
         while (stream.incrementToken()) {
             CharTermAttribute term = stream.getAttribute(CharTermAttribute.class);
             TypeAttribute type = stream.getAttribute(TypeAttribute.class);
