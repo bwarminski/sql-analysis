@@ -17,7 +17,7 @@
     </dependencySets>
     <files>
         <file>
-            <source>${basedir}/src/main/resources/plugin-descriptor.properties</source>
+            <source>${basedir}/plugin-descriptor.properties</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
         </file>
