@@ -1,15 +1,18 @@
 package org.elasticsearch.sqlAnalysis;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by bwarminski on 8/19/15.
+ * Tokenizes SQL input
  */
 public class BasicSQLAnalyzer extends Analyzer {
     protected TokenStreamComponents createComponents(String fieldName) {
@@ -17,13 +20,26 @@ public class BasicSQLAnalyzer extends Analyzer {
     }
 
     public static void main(String[] args) throws IOException {
-        Analyzer analyzer = new BasicSQLAnalyzer();
-        TokenStream stream = analyzer.tokenStream("SomeField", "SELECT a_1 AS \"alias_ME5EGYLSMQQGGYLUMVTW64TZ\",COUNT(*) AS \"occurrences_metric\" FROM \"fact_events\" WHERE ((name = 'Card opened') AND (client_date >= '2015-08-03' AND client_date <= '2015-09-02') AND (app_id = '56981')) GROUP BY \"alias_ME5EGYLSMQQGGYLUMVTW64TZ\" ORDER BY \"occurrences_metric\" DESC");
-        stream.reset();
-        while (stream.incrementToken()) {
-            CharTermAttribute term = stream.getAttribute(CharTermAttribute.class);
-            TypeAttribute type = stream.getAttribute(TypeAttribute.class);
-            System.out.print(term.toString() + "|" + type.type() + " ");
+
+        List<String> queries = ImmutableList.of( "" ); // Your sql here
+
+        for (String query : queries) {
+            System.out.println(query);
+            Analyzer analyzer = new BasicSQLAnalyzer();
+            TokenStream stream = analyzer.tokenStream("SomeField", query);
+            stream.reset();
+            List<String> terms = new ArrayList<>();
+            while (stream.incrementToken()) {
+                CharTermAttribute term = stream.getAttribute(CharTermAttribute.class);
+                TypeAttribute type = stream.getAttribute(TypeAttribute.class);
+// Uncomment this and out.prin below to output token types
+//                System.out.print(term.toString() + "|" + type.type() + " ");
+                terms.add(term.toString());
+            }
+//            System.out.print("\n");
+            System.out.println(Joiner.on(" ").join(terms));
+            System.out.println();
         }
+
     }
 }

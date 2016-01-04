@@ -63,6 +63,14 @@ public class StringStream {
         }
         return false;
     }
+    public boolean eatNot(char match) {
+        if (peek() != match) {
+            ++this.pos;
+            lastChar = match;
+            return true;
+        }
+        return false;
+    }
     public boolean eatWhile(Pattern match) {
         int start = pos;
         while (this.eat(match)) {}
