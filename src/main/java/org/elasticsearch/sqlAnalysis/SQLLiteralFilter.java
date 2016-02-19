@@ -11,6 +11,7 @@ import org.elasticsearch.sqlAnalysis.BasicSQLTokenizer.TokenTypes;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Attempts to replace literals in SQL statements with with ?
@@ -31,6 +32,7 @@ public class SQLLiteralFilter extends TokenFilter {
 
     private static final Set<String> LITERALS = ImmutableSet.of(TokenTypes.LITERAL, TokenTypes.NUMBER);
     private static final Set<String> KEYWORD_OR_LITERAL = ImmutableSet.of(TokenTypes.KEYWORD, TokenTypes.LITERAL);
+    private static final Pattern DATEISH = Pattern.compile("([1-9][0-9])?[0-9]?[0-9]-[0-9]?[1-9]-([0-9][0-9])?[0-9]?[0-9]");
 
     private boolean inFrom = false;
     private boolean inGroupBy = false;
@@ -63,9 +65,9 @@ public class SQLLiteralFilter extends TokenFilter {
         if (!inOrderBy && isKeyword() && "order".equals(term.toString())) inOrderBy = true;
 
         // Keep first literal after keyword or terminal
-
+        boolean lastTypeWasKerwordOrLiteral = KEYWORD_OR_LITERAL.contains(lastType);
         // replace literals with ?
-        if (!inFrom && !inGroupBy && !inOrderBy && !KEYWORD_OR_LITERAL.contains(lastType) && LITERALS.contains(type.type())) {
+        if (!inFrom && !inGroupBy && !inOrderBy && (!lastTypeWasKerwordOrLiteral || lastTypeWasKerwordOrLiteral && DATEISH.matcher(term.toString()).matches()) && LITERALS.contains(type.type())) {
             term.setEmpty().append("?");
         }
 

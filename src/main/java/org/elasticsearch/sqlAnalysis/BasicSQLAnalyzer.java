@@ -1,6 +1,7 @@
 package org.elasticsearch.sqlAnalysis;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -23,23 +24,12 @@ public class BasicSQLAnalyzer extends Analyzer {
 
         List<String> queries = ImmutableList.of( "" ); // Your sql here
 
-        for (String query : queries) {
-            System.out.println(query);
-            Analyzer analyzer = new BasicSQLAnalyzer();
-            TokenStream stream = analyzer.tokenStream("SomeField", query);
-            stream.reset();
-            List<String> terms = new ArrayList<>();
-            while (stream.incrementToken()) {
-                CharTermAttribute term = stream.getAttribute(CharTermAttribute.class);
-                TypeAttribute type = stream.getAttribute(TypeAttribute.class);
-// Uncomment this and out.prin below to output token types
-//                System.out.print(term.toString() + "|" + type.type() + " ");
-                terms.add(term.toString());
+        TestHarness tester = new TestHarness(new Supplier<Analyzer>() {
+            @Override
+            public Analyzer get() {
+                return new BasicSQLAnalyzer();
             }
-//            System.out.print("\n");
-            System.out.println(Joiner.on(" ").join(terms));
-            System.out.println();
-        }
-
+        }, true);
+        tester.run(queries);
     }
 }
