@@ -44,7 +44,7 @@ public class SQLLiteralFilter extends TokenFilter {
      *
      * @param input
      */
-    protected SQLLiteralFilter(TokenStream input) {
+    public SQLLiteralFilter(TokenStream input) {
         super(input);
     }
 

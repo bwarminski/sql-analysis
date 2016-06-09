@@ -24,7 +24,7 @@ public class SQLAsFilter extends FilteringTokenFilter {
      *
      * @param input
      */
-    protected SQLAsFilter(TokenStream input) {
+    public SQLAsFilter(TokenStream input) {
         super(input);
     }
 

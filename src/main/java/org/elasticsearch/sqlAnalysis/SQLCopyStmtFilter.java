@@ -26,7 +26,7 @@ public class SQLCopyStmtFilter extends TokenFilter {
      *
      * @param input
      */
-    protected SQLCopyStmtFilter(TokenStream input) {
+    public SQLCopyStmtFilter(TokenStream input) {
         super(input);
     }
 
